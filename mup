@@ -1,0 +1,35 @@
+#!/bin/bash
+
+echo "🤖 Was soll gebaut werden? (Pfeiltasten aktiv)"
+read -e USER_PROMPT
+
+if [ -z "$USER_PROMPT" ]; then
+  echo "❌ Abbruch: Keine Eingabe."
+  exit 1
+fi
+
+echo "⏳ KI entwirft die Projektstruktur und generiert Code..."
+
+# Wir fordern die KI auf, ein Bash-Script zu schreiben, das die Struktur erstellt
+gmi "Erstelle ein Bash-Script, das folgende Struktur baut: $USER_PROMPT. 
+Trenne HTML, CSS und JS in eigene Dateien. Nutze Unterordner wie /css, /js und /assets. 
+Nutze 'curl' Befehle, um Bilder von URLs herunterzuladen. 
+Gib NUR den Bash-Code aus, beginnend mit #!/bin/bash" > setup_structure.sh
+
+# Sicherheits-Check
+if grep -q "API Fehler" setup_structure.sh; then
+  echo "❌ KI ist gerade überlastet."
+  rm setup_structure.sh
+else
+  echo "📂 Erstelle Ordner und Dateien..."
+  chmod +x setup_structure.sh
+  ./setup_structure.sh  # Hier werden jetzt die Ordner und Dateien wirklich erstellt!
+  rm setup_structure.sh
+
+  echo "🚀 Lade das gesamte Projekt auf GitHub hoch..."
+  git add .
+  git commit -m "Struktur-Update: $USER_PROMPT"
+  git push --force origin main
+  
+  echo "🎉 Projektstruktur ist live!"
+fi
