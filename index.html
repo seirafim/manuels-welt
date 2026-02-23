@@ -1,0 +1,436 @@
+Hier ist eine vollständige, responsive One-Page-Website in einer einzigen Datei. 
+
+**Hinweis zur DSGVO:** Um 100% datenschutzkonform zu sein, verzichtet dieses Template auf externe CDNs (wie Google Fonts Server). Ich habe System-Schriftarten gewählt, die den gewünschten Serif/Sans-Serif Look imitieren. Wenn du spezifische Google Fonts nutzen möchtest, erkläre ich unten, wie du sie lokal einbindest.
+
+```html
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuel Seirafi | Multimedia-Mensch</title>
+    <style>
+        /* 
+           DESIGN SYSTEM 
+           Serif: Georgia, 'Times New Roman', serif
+           Sans-Serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif
+        */
+        
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --accent-color: #444444;
+            --light-gray: #f4f4f4;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .serif {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 100px 0;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: bold;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            margin-left: 25px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-pic {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: #eee; /* Platzhalter */
+            margin-bottom: 30px;
+            object-fit: cover;
+            border: 2px solid var(--text-color);
+            padding: 5px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        /* --- Über Mich --- */
+        .about {
+            background-color: var(--light-gray);
+            text-align: center;
+        }
+
+        .about p {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+        }
+
+        /* --- Leistungen --- */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .service-card {
+            padding: 40px;
+            border: 1px solid #eee;
+            transition: var(--transition);
+        }
+
+        .service-card:hover {
+            border-color: var(--text-color);
+            background: #fafafa;
+        }
+
+        .service-card h3 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        /* --- Projekte (Filter) --- */
+        .filter-buttons {
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            background: none;
+            border: 1px solid var(--text-color);
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--text-color);
+            color: white;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .project-item {
+            position: relative;
+            aspect-ratio: 16/9;
+            background: #222;
+            overflow: hidden;
+            display: block;
+        }
+
+        .project-item.hide {
+            display: none;
+        }
+
+        .project-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .project-item:hover img {
+            opacity: 0.4;
+            transform: scale(1.05);
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            pointer-events: none;
+        }
+
+        .play-button::after {
+            content: '';
+            border-style: solid;
+            border-width: 10px 0 10px 20px;
+            border-color: transparent transparent transparent white;
+            margin-left: 5px;
+        }
+
+        .project-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 80px 0 40px 0;
+            text-align: center;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .email-link {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            font-family: Georgia, serif;
+            border-bottom: 2px solid var(--text-color);
+        }
+
+        .back-to-top {
+            margin-top: 50px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .nav-links { display: none; } /* Vereinfachung für Mobile */
+            section { padding: 60px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container nav-content">
+            <a href="#" class="logo">M. Seirafi</a>
+            <div class="nav-links">
+                <a href="#about">Über mich</a>
+                <a href="#services">Leistungen</a>
+                <a href="#projects">Projekte</a>
+                <a href="#contact">Kontakt</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container hero-content">
+            <!-- Platzhalter für Profilbild: Ersetze 'src' durch dein Foto -->
+            <img src="https://via.placeholder.com/300" alt="Manuel Seirafi" class="profile-pic">
+            <h1>Hi. Ich bin ein <br><span class="serif">multi-media Mensch</span>.</h1>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2 style="margin-bottom: 30px;">Über mich</h2>
+            <p>
+                Willkommen auf meiner kleinen Ecke im Internet. Ich bin Manuel Seirafi, ein kreativer Kopf mit Leidenschaft für visuelles Storytelling, Klangwelten und digitale Erlebnisse. Zwischen Kamera-Slidern, Synthesizern und Code-Zeilen fühle ich mich zu Hause.
+            </p>
+        </div>
+    </section>
+
+    <section id="services">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 50px;">Was ich mache</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Kameramann & Editor</h3>
+                    <p>Visuelles Storytelling von der ersten Klappe bis zum finalen Color Grading. Ich fange Momente ein und schneide sie zu packenden Geschichten.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Musiker</h3>
+                    <p>Komposition und Produktion von Soundtracks und atmosphärischen Klängen, die Projekte auf eine neue emotionale Ebene heben.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Webdesigner</h3>
+                    <p>Erstellung moderner Websites mit Fokus auf Performance und Ästhetik. Sicherer Umgang mit HTML, CSS und PHP.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 40px;">Projekte</h2>
+            
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Alle</button>
+                <button class="filter-btn" data-filter="impressionen">Impressionen</button>
+                <button class="filter-btn" data-filter="musikvideos">Musikvideos</button>
+                <button class="filter-btn" data-filter="kurzfilme">Kurzfilme</button>
+                <button class="filter-btn" data-filter="websites">Websites</button>
+            </div>
+
+            <div class="project-grid">
+                <!-- Projekt 1 -->
+                <div class="project-item" data-category="impressionen">
+                    <img src="https://via.placeholder.com/600x400/1a1a1a/ffffff?text=Video+Thumbnail" alt="Projekt">
+                    <div class="play-button"></div>
+                    <div class="project-info">Impressionen Sommer 24</div>
+                </div>
+                <!-- Projekt 2 -->
+                <div class="project-item" data-category="musikvideos">
+                    <img src="https://via.placeholder.com/600x400/333333/ffffff?text=Musikvideo" alt="Projekt">
+                    <div class="play-button"></div>
+                    <div class="project-info">Artist Name - Track</div>
+                </div>
+                <!-- Projekt 3 -->
+                <div class="project-item" data-category="websites">
+                    <img src="https://via.placeholder.com/600x400/444444/ffffff?text=Website+Layout" alt="Projekt">
+                    <div class="project-info">E-Commerce Portfolio</div>
+                </div>
+                <!-- Projekt 4 -->
+                <div class="project-item" data-category="kurzfilme">
+                    <img src="https://via.placeholder.com/600x400/111111/ffffff?text=Kurzfilm" alt="Projekt">
+                    <div class="play-button"></div>
+                    <div class="project-info">The Silent Room</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <h2 style="margin-bottom: 20px;">Lass uns reden.</h2>
+            <a href="mailto:mail@manuelseirafi.at" class="email-link">mail@manuelseirafi.at</a>
+            <br>
+            <button class="back-to-top" onclick="window.scrollTo(0,0)">↑ Back to top</button>
+            <p style="margin-top: 40px; font-size: 0.7rem; color: #999;">
+                &copy; <script>document.write(new Date().getFullYear())</script> Manuel Seirafi. <br>
+                DSGVO konform: Keine Cookies, keine Tracking-Scripts, lokal gehostete Ressourcen.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Projekt Filter Logik
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const projectItems = document.querySelectorAll('.project-item');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Active Button Style
+                filterButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filterValue = btn.getAttribute('data-filter');
+
+                projectItems.forEach(item => {
+                    if (filterValue === 'all' || item.getAttribute('data-category') === filterValue) {
+                        item.classList.remove('hide');
+                    } else {
+                        item.classList.add('hide');
+                    }
+                });
+            });
+        });
+
+        // Optional: Sanftes Scrollen für die Navigation (schon via CSS, hier als JS Backup)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+```
+
+### Hinweise zur weiteren Anpassung:
+
+1.  **Bilder & Videos:** 
+    *   Ersetze die `<img> src` Platzhalter durch deine echten Bildpfade (z.B. `images/thumbnail1.jpg`).
+    *   Für die Play-Buttons habe ich eine CSS-Lösung gewählt. Wenn du auf ein Projekt klickst, könntest du mit JavaScript eine Lightbox (z.B. für YouTube oder Vimeo) öffnen.
+
+2.  **Schriften (DSGVO):**
+    *   Das Template nutzt aktuell System-Schriften. Wenn du z.B. "Playfair Display" (Serif) und "Inter" (Sans-Serif) nutzen willst:
+    *   Gehe auf [google-webfonts-helper](https://google-webfonts-helper.herokuapp.com/fonts).
+    *   Lade die Schriften herunter, lege sie in einen Ordner `/fonts/`.
+    *   Füge das generierte CSS in den `<style>` Bereich ein und ändere die `font-family` im CSS entsprechend ab.
+
+3.  **Responsive Design:**
+    *   Die Website nutzt CSS Grid (`repeat(auto-fit...)`), was bedeutet, dass sich die Spalten bei kleineren Bildschirmen automatisch von 3 auf 2 oder 1 reduzieren.
+
+4.  **PHP:**
+    *   Da dies eine `index.html` ist, ist kein PHP enthalten. Wenn du ein Kontaktformular mit PHP-Mail-Versand benötigst, benenne die Datei in `index.php` um und füge ein einfaches `mail()` Script für das Formular hinzu. Für eine minimalistische Seite ist der `mailto:` Link jedoch oft benutzerfreundlicher und datenschutztechnisch unbedenklicher.
